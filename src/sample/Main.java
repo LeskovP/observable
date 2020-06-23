@@ -1,39 +1,38 @@
 package sample;
 
-import com.sun.javafx.collections.MappingChange;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
-import java.util.Arrays;
-import java.util.Map;
+import java.util.HashMap;
+import java.util.TreeMap;
 
 
 public class Main extends Application {
 
-    private final ObservableList<String> capitals;
-    private final ObservableMap<String,Capital> countries;
+    private ObservableList<String> capitals;
+    private ObservableList<String> countries;
+    private ObservableMap<CountryCapital,Image> countriesFlag;
 
     private ListView<String> capitalsListView;
-    private Map<String,Capital> countriesMap;
-    private ListView<Image> flagListView;
-    private Label city;
+    private ListView<String> countriesListView;
     private ImageView flag;
 
-    public Main() {
+    public void buildData(){
         capitals = FXCollections.observableArrayList(
                 "Canberra",
                 "Vienna",
@@ -47,64 +46,41 @@ public class Main extends Application {
                 "London",
                 "Stockholm"
         );
-        capitalsListView = new ListView<>(capitals);
-        /*countriesMap.put("Australia", new Capital("Canberra", new Image("/images/Australia.png")));
-        countriesMap.put("Austria", new Capital("Vienna", new Image("/images/Austria.gif")));
-        countriesMap.put("Belgium", new Capital("Brussels", new Image("/images/Belgium.png")));
-        countriesMap.put("Chile", new Capital("Santiago", new Image("/images/Chile.jpg")));
-        countriesMap.put("Finland", new Capital("Helsinki", new Image("/images/Finland.png")));
-        countriesMap.put("India", new Capital("New Delhi", new Image("/images/India.jpg")));
-        countriesMap.put("Costa Rica", new Capital("San Jose", new Image("/images/Costa Rica.png")));
-        countriesMap.put("Taiwan", new Capital("Taipei", new Image("/images/Taiwan.jpg")));
-        countriesMap.put("USA", new Capital("Vienna", new Image("/images/Austria.gif")));
-        countriesMap.put("UK", new Capital("London", new Image("/images/UK.png")));
-        countriesMap.put("Sweden", new Capital("Stockholm", new Image("/images/Sweden.jpg")));
-        countries = FXCollections.observableMap(countriesMap);*/
-
-
-        /*countriesData = FXCollections.observableArrayList(
-                new CityFlag("Australia", "Canberra", new Image("/images/Australia.png")),
-                new CityFlag("Austria", "Vienna", new Image("/images/Austria.gif")),
-                new CityFlag("Belgium", "Brussels", new Image("/images/Belgium.png")),
-                new CityFlag("Chile", "Santiago", new Image("/images/Chile.jpg")),
-                new CityFlag("Finland", "Helsinki", new Image("/images/Finland.png")),
-                new CityFlag("India", "New Delhi", new Image("/images/India.jpg")),
-                new CityFlag("Costa Rica", "San Jose", new Image("/images/Costa Rica.png")),
-                new CityFlag("Taiwan", "Taipei", new Image("/images/Taiwan.jpg")),
-                new CityFlag("USA", "Washington DC", new Image("/images/USA.jpg")),
-                new CityFlag("UK", "London", new Image("/images/UK.png")),
-                new CityFlag("Sweden", "Stockholm", new Image("/images/Sweden.jpg"))
-        );*/
+        countries = FXCollections.observableArrayList(
+                "Australia",
+                "Austria",
+                "Belgium",
+                "Chile",
+                "Finland",
+                "India",
+                "Costa Rica",
+                "Taiwan",
+                "USA",
+                "UK",
+                "Sweden"
+        );
+        countriesFlag = FXCollections.observableMap(new TreeMap<CountryCapital, Image>(new CountryCapitalComparator()) {{
+                put(new CountryCapital("Australia", "Canberra"), new Image("/images/Australia.png"));
+                put(new CountryCapital("Austria", "Vienna"), new Image("/images/Austria.gif"));
+                put(new CountryCapital("Belgium", "Brussels"), new Image("/images/Belgium.png"));
+                put(new CountryCapital("Chile", "Santiago"), new Image("/images/Chile.jpg"));
+                put(new CountryCapital("Finland", "Helsinki"), new Image("/images/Finland.png"));
+                put(new CountryCapital("India", "New Delhi"), new Image("/images/India.jpg"));
+                put(new CountryCapital("Costa Rica", "San Jose"), new Image("/images/Costa Rica.png"));
+                put(new CountryCapital("Taiwan", "Taipei"), new Image("/images/Taiwan.jpg"));
+                put(new CountryCapital("USA", "Washington DC"), new Image("/images/USA.jpg"));
+                put(new CountryCapital("UK", "London"), new Image("/images/UK.png"));
+                put(new CountryCapital("Sweden", "Stockholm"), new Image("/images/Sweden.jpg"));
+        }});
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-    @Override
-    public void start(Stage primaryStage) {
+    public void buildGui(Stage primaryStage){
         primaryStage.setTitle("Arrange Countries and Capitals");
         BorderPane root = new BorderPane();
         Scene scene = new Scene(root, 500, 450);
 
-        /*countries = new ListView<>(countriesData);
-        countries.setCellFactory(param -> new ListCell<CityFlag>() {
-            @Override
-            protected void updateItem(CityFlag item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null || item.getNameCountry() == null) {
-                    setText(null);
-                } else {
-                    setText(item.getNameCountry());
-                }
-            }
-        });
-        countries.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends CityFlag> ov, CityFlag _old, CityFlag _new) -> {
-            city.setText(_new.getNameCapital());
-            flag.setImage(_new.getFlag());
-        });*/
-
-        city = new Label();
+        capitalsListView = new ListView<>(capitals);
+        countriesListView = new ListView<>(countries);
         flag = new ImageView();
 
         GridPane gridPane = new GridPane();
@@ -119,11 +95,11 @@ public class Main extends Application {
         column3.setHgrow(Priority.ALWAYS);
         gridPane.getColumnConstraints().addAll(column1, column2, column3);
 
-        Label countriesLabel = new Label("Countries");
+        Label countriesLabel = new Label("Capitals");
         GridPane.setHalignment(countriesLabel, HPos.CENTER);
         gridPane.add(countriesLabel, 0, 0);
 
-        Label capitalsLabel = new Label("Capital");
+        Label capitalsLabel = new Label("Countries");
         GridPane.setHalignment(capitalsLabel, HPos.CENTER);
         gridPane.add(capitalsLabel, 1, 0);
 
@@ -132,12 +108,44 @@ public class Main extends Application {
         gridPane.add(flagsLabel, 2, 0);
 
         gridPane.add(capitalsListView, 0, 1);
-        gridPane.add(city, 1, 1);
+        gridPane.add(countriesListView, 1, 1);
         gridPane.add(flag, 2, 1);
 
         root.setCenter(gridPane);
         GridPane.setVgrow(root, Priority.ALWAYS);
+
         primaryStage.setScene(scene);
+    }
+
+    public void buildListeners(){
+        capitalsListView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String old, String current) -> {
+            if(countriesListView.getSelectionModel().getSelectedItem() == null || current == null){
+                flag.setImage(null);
+            }else {
+                CountryCapital key = new CountryCapital(countriesListView.getSelectionModel().getSelectedItem(), current);
+                flag.setImage(countriesFlag.get(key));
+            }
+        });
+        countriesListView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String old, String current) -> {
+            if(capitalsListView.getSelectionModel().getSelectedItem() == null || current == null){
+                flag.setImage(null);
+            }else {
+                CountryCapital key = new CountryCapital(current, capitalsListView.getSelectionModel().getSelectedItem());
+                flag.setImage(countriesFlag.get(key));
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        buildData();
+        buildGui(primaryStage);
+        buildListeners();
+
         primaryStage.show();
     }
 
