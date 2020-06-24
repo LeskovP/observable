@@ -1,6 +1,5 @@
 package sample;
 
-//import de.codecentric.centerdevice.javafxsvg.SvgImageLoaderFactory;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -37,7 +36,6 @@ public class Main extends Application {
 
 
     public void buildData(){
-        //SvgImageLoaderFactory.install();
         capitals = FXCollections.observableArrayList();
         countries = FXCollections.observableArrayList();
         TreeMap<CountryCapital, Image> treeTmp = new TreeMap<>(new CountryCapitalComparator());

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/observible.iml" filepath="$PROJECT_DIR$/observible.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/observable.iml" filepath="$PROJECT_DIR$/.idea/observable.iml" />
     </modules>
   </component>
 </project>
