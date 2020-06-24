@@ -1,6 +1,6 @@
 package sample;
 
-import de.codecentric.centerdevice.javafxsvg.SvgImageLoaderFactory;
+//import de.codecentric.centerdevice.javafxsvg.SvgImageLoaderFactory;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -37,7 +37,7 @@ public class Main extends Application {
 
 
     public void buildData(){
-        SvgImageLoaderFactory.install();
+        //SvgImageLoaderFactory.install();
         capitals = FXCollections.observableArrayList();
         countries = FXCollections.observableArrayList();
         TreeMap<CountryCapital, Image> treeTmp = new TreeMap<>(new CountryCapitalComparator());
@@ -68,7 +68,8 @@ public class Main extends Application {
         capitalsListView = new ListView<>(capitals);
         countriesListView = new ListView<>(countries);
         flag = new ImageView();
-        flag.setPreserveRatio(true);
+        flag.setFitWidth(300);
+        flag.setFitHeight(150);
 
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(5));
@@ -96,9 +97,7 @@ public class Main extends Application {
 
         gridPane.add(capitalsListView, 0, 1);
         gridPane.add(countriesListView, 1, 1);
-        BorderPane imgPanel = new BorderPane();
-        imgPanel.setCenter(flag);
-        gridPane.add(imgPanel, 2, 1);
+        gridPane.add(flag, 2, 1);
 
         root.setCenter(gridPane);
         GridPane.setVgrow(root, Priority.ALWAYS);
