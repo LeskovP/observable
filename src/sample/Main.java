@@ -21,8 +21,6 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-import java.util.TreeMap;
-
 
 public class Main extends Application {
 
@@ -38,7 +36,7 @@ public class Main extends Application {
     public void buildData(){
         capitals = FXCollections.observableArrayList();
         countries = FXCollections.observableArrayList();
-        TreeMap<CountryCapital, Image> treeTmp = new TreeMap<>(new CountryCapitalComparator());
+        countriesFlag = FXCollections.observableHashMap();
 
         try {
             Scanner in = new Scanner(new File("countries.txt"));
@@ -48,14 +46,13 @@ public class Main extends Application {
                 String words[] = s.split("__");
                 capitals.add(words[1]);
                 countries.add(words[0]);
-                treeTmp.put(new CountryCapital(words[0],words[1]),new Image(words[2]));
+                countriesFlag.put(new CountryCapital(words[0],words[1]),new Image(words[2]));
             }
             in.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        countriesFlag = FXCollections.observableMap(treeTmp);
     }
 
     public void buildGui(Stage primaryStage){
